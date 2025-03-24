@@ -8,6 +8,13 @@
     </parent>
     <artifactId>grafosMatriz</artifactId>
     <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>grafosComun</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
     <properties>
         <maven.compiler.release>23</maven.compiler.release>
         <exec.mainClass>implementaciones.GrafosMatriz</exec.mainClass>

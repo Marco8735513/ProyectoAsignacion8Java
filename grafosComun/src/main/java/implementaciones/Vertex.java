@@ -122,7 +122,10 @@ public class Vertex<T> {
      *
      * @param obj Vertice con el que se compara este vertice
      * @return true si los vertices son iguales, false en caso contrario
+     * 
      */
+    
+    //
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
