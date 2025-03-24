@@ -238,15 +238,60 @@ public abstract class MatrixGraph<T> implements IGraph<T> {
     private Vertex<T> getUnvisitedNeighbor(Vertex<T> vertice) {
         int indice = indexOf(vertice.getEtiqueta());
         Vertex<T> vecino;
-        for (int i = 0; i < nVertices; i++ ){
+        for (int i = 0; i < nVertices; i++) {
 
-        
-        
-if (adyacencias[indice][i] != Double.POSITIVE_INFINITY) {
-            vecino = vertices.get(i);
-            if (!vecino.isVisitado()) 
-                return vecino;
+            if (adyacencias[indice][i] != Double.POSITIVE_INFINITY) {
+                vecino = vertices.get(i);
+                if (!vecino.isVisitado()) {
+                    return vecino;
+                }
             }
         }
         return null;
-    }}
+    }
+
+    /**
+     * Elimina un vertice del grafo, si existe
+     *
+     * @param etiqueta Etiqueta del vertice a eliminar
+     * @throws GraphException Si el vertice a eliminar no existe
+     */
+    @Override
+
+    public void removeVertex(T etiqueta) throws GraphException {
+
+        int indice = indexOf(etiqueta);
+        
+        //Verificar si el vertice existe
+        if (indice == -1) {
+            throw new GraphException("El vertice no existe");
+        }
+
+        //Eliminar todas las aristas asociadas al vertice
+        for (int i = 0; i < nVertices; i++) {
+            adyacencias[indice][i] = Double.POSITIVE_INFINITY;
+            adyacencias[i][indice] = Double.POSITIVE_INFINITY;
+
+        }
+
+        //Eliminar el vértice de la lista
+        vertices.remove(indice);
+        nVertices--;
+        
+        //Reorganizar la matriz de adyacencias para llenar el espacio dejado por el vertice eliminado
+        
+        for(int i = indice; i < nVertices; i++){
+            for(int j = 0; j < maxVertices; j++){
+            adyacencias[i][j] = adyacencias[i+1][j];
+            
+            }
+            
+            
+        }
+        
+        //Llenar con infinito las posiciones que quedaron vacías
+       //... Entiendelo Te quedaste aquí...
+        
+    }
+
+}
