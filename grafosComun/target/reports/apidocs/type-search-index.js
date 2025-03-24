@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"excepciones","l":"GraphException"},{"p":"interfaces","l":"IGraph"},{"p":"implementaciones","l":"Vertex"}];updateSearchResults();
