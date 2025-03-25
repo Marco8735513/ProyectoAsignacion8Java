@@ -152,57 +152,65 @@ public class MatrixNoDiGraph<T> extends MatrixGraph<T> {
     }
 
     @Override
-public void removeEdge(T etqX, T etqY) throws GraphException {
-    // Verifica existencia de vértices
-    int indiceX = indexOf(etqX);
-    if (indiceX == -1) throw new GraphException("Vértice " + etqX + " no existe");
-    
-    int indiceY = indexOf(etqY);
-    if (indiceY == -1) throw new GraphException("Vértice " + etqY + " no existe");
-    
-    // Verifica existencia de arista (en ambas direcciones)
-    if (adyacencias[indiceX][indiceY] == Double.POSITIVE_INFINITY || 
-        adyacencias[indiceY][indiceX] == Double.POSITIVE_INFINITY) {
-        throw new GraphException("Arista " + etqX + " - " + etqY + " no existe");
-    }
-    
-    // Elimina la arista en ambas direcciones
-    adyacencias[indiceX][indiceY] = Double.POSITIVE_INFINITY;
-    adyacencias[indiceY][indiceX] = Double.POSITIVE_INFINITY;
-}
-  
-@Override
-public void setEdgeWeight(T etqX, T etqY, double peso) throws GraphException {
-    // Verifica existencia de vértices
-    int indiceX = indexOf(etqX);
-    if (indiceX == -1) throw new GraphException("Vértice " + etqX + " no existe");
-    
-    int indiceY = indexOf(etqY);
-    if (indiceY == -1) throw new GraphException("Vértice " + etqY + " no existe");
-    
-    // Verifica existencia de arista
-    if (adyacencias[indiceX][indiceY] == Double.POSITIVE_INFINITY || 
-        adyacencias[indiceY][indiceX] == Double.POSITIVE_INFINITY) {
-        throw new GraphException("Arista " + etqX + " - " + etqY + " no existe");
-    }
-    
-    // Establece el nuevo peso en ambas direcciones
-    adyacencias[indiceX][indiceY] = peso;
-    adyacencias[indiceY][indiceX] = peso;
-}
+    public void removeEdge(T etqX, T etqY) throws GraphException {
+        // Verifica existencia de vértices
+        int indiceX = indexOf(etqX);
+        if (indiceX == -1) {
+            throw new GraphException("Vértice " + etqX + " no existe");
+        }
 
-@Override
-public int getNumberEdges() {
-    int count = 0;
-    for (int i = 0; i < nVertices; i++) {
-        for (int j = i; j < nVertices; j++) { // j = i para evitar contar duplicados
-            if (adyacencias[i][j] != Double.POSITIVE_INFINITY) {
-                count++;
+        int indiceY = indexOf(etqY);
+        if (indiceY == -1) {
+            throw new GraphException("Vértice " + etqY + " no existe");
+        }
+
+        // Verifica existencia de arista (en ambas direcciones)
+        if (adyacencias[indiceX][indiceY] == Double.POSITIVE_INFINITY
+                || adyacencias[indiceY][indiceX] == Double.POSITIVE_INFINITY) {
+            throw new GraphException("Arista " + etqX + " - " + etqY + " no existe");
+        }
+
+        // Elimina la arista en ambas direcciones
+        adyacencias[indiceX][indiceY] = Double.POSITIVE_INFINITY;
+        adyacencias[indiceY][indiceX] = Double.POSITIVE_INFINITY;
+    }
+
+    @Override
+    public void setEdgeWeight(T etqX, T etqY, double peso) throws GraphException {
+        // Verifica existencia de vértices
+        int indiceX = indexOf(etqX);
+        if (indiceX == -1) {
+            throw new GraphException("Vértice " + etqX + " no existe");
+        }
+
+        int indiceY = indexOf(etqY);
+        if (indiceY == -1) {
+            throw new GraphException("Vértice " + etqY + " no existe");
+        }
+
+        // Verifica existencia de arista
+        if (adyacencias[indiceX][indiceY] == Double.POSITIVE_INFINITY
+                || adyacencias[indiceY][indiceX] == Double.POSITIVE_INFINITY) {
+            throw new GraphException("Arista " + etqX + " - " + etqY + " no existe");
+        }
+
+        // Establece el nuevo peso en ambas direcciones
+        adyacencias[indiceX][indiceY] = peso;
+        adyacencias[indiceY][indiceX] = peso;
+    }
+
+    @Override
+    public int getNumberEdges() {
+        int count = 0;
+        for (int i = 0; i < nVertices; i++) {
+            for (int j = i; j < nVertices; j++) { // j = i para evitar contar duplicados
+                if (adyacencias[i][j] != Double.POSITIVE_INFINITY) {
+                    count++;
+                }
             }
         }
+        return count;
     }
-    return count;
-}
-
-
+    
+    
 }
