@@ -261,7 +261,7 @@ public abstract class MatrixGraph<T> implements IGraph<T> {
     public void removeVertex(T etiqueta) throws GraphException {
 
         int indice = indexOf(etiqueta);
-        
+
         //Verificar si el vertice existe
         if (indice == -1) {
             throw new GraphException("El vertice no existe");
@@ -277,21 +277,55 @@ public abstract class MatrixGraph<T> implements IGraph<T> {
         //Eliminar el vértice de la lista
         vertices.remove(indice);
         nVertices--;
-        
+
         //Reorganizar la matriz de adyacencias para llenar el espacio dejado por el vertice eliminado
-        
-        for(int i = indice; i < nVertices; i++){
-            for(int j = 0; j < maxVertices; j++){
-            adyacencias[i][j] = adyacencias[i+1][j];
-            
+        for (int i = indice; i < nVertices; i++) {
+            for (int j = 0; j < maxVertices; j++) {
+                adyacencias[i][j] = adyacencias[i + 1][j];
+
             }
-            
-            
+
         }
-        
+
         //Llenar con infinito las posiciones que quedaron vacías
-       //... Entiendelo Te quedaste aquí...
-        
+        for (int i = nVertices; i < maxVertices; i++) {
+            for (int j = 0; j < maxVertices; j++) {
+                adyacencias[i][j] = Double.POSITIVE_INFINITY;
+
+            }
+
+        }
+    }
+
+    /**
+     * Obtiene la lista de vertices del grafo.
+     *
+     * @return La lista de vertices del grafo.
+     */
+    @Override
+    public LinkedList<T> getVertices() {
+        LinkedList<T> etiquetas = new LinkedList<>();
+        for (Vertex<T> vertice : vertices) {
+            etiquetas.add(vertice.getEtiqueta());
+        }
+        return etiquetas;
+    }
+
+    /**
+     * Remueve todos los vertices y aristas del grafo
+     */
+    @Override
+    public void clear() {
+        // Limpiar la lista de vértices
+        vertices.clear();
+        nVertices = 0;
+
+        // Reinicializar la matriz de adyacencias con infinito
+        for (int i = 0; i < maxVertices; i++) {
+            for (int j = 0; j < maxVertices; j++) {
+                adyacencias[i][j] = Double.POSITIVE_INFINITY;
+            }
+        }
     }
 
 }
