@@ -152,32 +152,57 @@ public class MatrixNoDiGraph<T> extends MatrixGraph<T> {
     }
 
     @Override
-    public void removeVertex(T etqVertice) throws GraphException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+public void removeEdge(T etqX, T etqY) throws GraphException {
+    // Verifica existencia de vértices
+    int indiceX = indexOf(etqX);
+    if (indiceX == -1) throw new GraphException("Vértice " + etqX + " no existe");
+    
+    int indiceY = indexOf(etqY);
+    if (indiceY == -1) throw new GraphException("Vértice " + etqY + " no existe");
+    
+    // Verifica existencia de arista (en ambas direcciones)
+    if (adyacencias[indiceX][indiceY] == Double.POSITIVE_INFINITY || 
+        adyacencias[indiceY][indiceX] == Double.POSITIVE_INFINITY) {
+        throw new GraphException("Arista " + etqX + " - " + etqY + " no existe");
     }
+    
+    // Elimina la arista en ambas direcciones
+    adyacencias[indiceX][indiceY] = Double.POSITIVE_INFINITY;
+    adyacencias[indiceY][indiceX] = Double.POSITIVE_INFINITY;
+}
+  
+@Override
+public void setEdgeWeight(T etqX, T etqY, double peso) throws GraphException {
+    // Verifica existencia de vértices
+    int indiceX = indexOf(etqX);
+    if (indiceX == -1) throw new GraphException("Vértice " + etqX + " no existe");
+    
+    int indiceY = indexOf(etqY);
+    if (indiceY == -1) throw new GraphException("Vértice " + etqY + " no existe");
+    
+    // Verifica existencia de arista
+    if (adyacencias[indiceX][indiceY] == Double.POSITIVE_INFINITY || 
+        adyacencias[indiceY][indiceX] == Double.POSITIVE_INFINITY) {
+        throw new GraphException("Arista " + etqX + " - " + etqY + " no existe");
+    }
+    
+    // Establece el nuevo peso en ambas direcciones
+    adyacencias[indiceX][indiceY] = peso;
+    adyacencias[indiceY][indiceX] = peso;
+}
 
-    @Override
-    public LinkedList<T> getVertices() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+@Override
+public int getNumberEdges() {
+    int count = 0;
+    for (int i = 0; i < nVertices; i++) {
+        for (int j = i; j < nVertices; j++) { // j = i para evitar contar duplicados
+            if (adyacencias[i][j] != Double.POSITIVE_INFINITY) {
+                count++;
+            }
+        }
     }
+    return count;
+}
 
-    @Override
-    public void clear() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 
-    @Override
-    public void removeEdge(T etqVerticeX, T etqVerticeY) throws GraphException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void setEdgeWeight(T etqVerticeX, T etqVerticeY, double peso) throws GraphException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public int getNumberEdges() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 }
