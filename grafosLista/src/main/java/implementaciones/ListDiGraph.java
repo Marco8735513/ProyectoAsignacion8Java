@@ -1,7 +1,10 @@
 package implementaciones;
 
 import excepciones.GraphException;
+import java.lang.reflect.Field;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * ListDiGraph.java
@@ -118,33 +121,113 @@ public class ListDiGraph<T> extends ListGraph<T> {
         return verticeX.getEdge(verticeY).getPeso();
     }
 
+    /**
+     * Elimina la arista dirigida entre dos vértices especificados en el grafo.
+     * Este método solo afecta la arista desde el vértice etqX hacia el vértice
+     * etqY. Para grafos no dirigidos, utilice la implementación correspondiente
+     * en ListNoDiGraph.
+     *
+     * @param etqX etiqueta del vértice origen (de donde sale la arista)
+     * @param etqY etiqueta del vértice destino (hacia donde apunta la arista)
+     * @throws GraphException si alguno de los vértices no existe o si la arista
+     * especificada no existe
+     *
+     *
+     */
+   
     @Override
-    public void removeVertex(T etqVertice) throws GraphException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+public void removeEdge(T etqX, T etqY) throws GraphException {
+    // 1. Verificar que los vértices existen
+    ListVertex<T> verticeX = getVertex(etqX);
+    ListVertex<T> verticeY = getVertex(etqY);
+    
+    if (verticeX == null || verticeY == null) {
+        throw new GraphException("Vértice origen o destino no existe");
     }
 
-    @Override
-    public LinkedList<T> getVertices() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    // 2. Buscar y eliminar la arista
+    boolean aristaEncontrada = false;
+    Iterator<ListVertex<T>> vecinosIter = verticeX.getNeighborIterator();
+    
+    while (vecinosIter.hasNext()) {
+        if (vecinosIter.next().equals(verticeY)) {
+            vecinosIter.remove();  // Esto requiere que NeighborIterator.remove() esté implementado
+            aristaEncontrada = true;
+            break;
+        }
     }
 
+    // 3. Si no se encontró, lanzar excepción
+    if (!aristaEncontrada) {
+        throw new GraphException("Arista " + etqX + " -> " + etqY + " no existe");
+    }
+}
+    
+    
+    
+
+    /**
+     * Establece un nuevo peso para una arista dirigida entre dos vértices
+     * especificados.
+     *
+     * @param etqX etiqueta del vértice origen de la arista
+     * @param etqY etiqueta del vértice destino de la arista
+     * @param peso nuevo valor del peso que se asignará a la arista
+     * @throws GraphException en los siguientes casos:
+     *
+     */
     @Override
-    public void clear() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void setEdgeWeight(T etqX, T etqY, double peso) throws GraphException {
+        // Verifica si los vértices existen
+        ListVertex<T> verticeX = getVertex(etqX);
+        ListVertex<T> verticeY = getVertex(etqY);
+        if (verticeX == null || verticeY == null) {
+            throw new GraphException("Vértice origen o destino no existe");
+        }
+
+        // Itera sobre los vecinos y pesos de verticeX para actualizar el peso
+        Iterator<ListVertex<T>> iterVecinos = verticeX.getNeighborIterator();
+        Iterator<Double> iterPesos = verticeX.getWeightIterator();
+        boolean aristaEncontrada = false;
+
+        while (iterVecinos.hasNext()) {
+            ListVertex<T> vecino = iterVecinos.next();
+            if (vecino.equals(verticeY)) {
+                iterPesos.remove();          // Elimina el peso antiguo
+                verticeX.connect(verticeY, peso); // Vuelve a agregar con el nuevo peso
+                aristaEncontrada = true;
+                break;
+            }
+            iterPesos.next(); // Avanza el iterador de pesos si no es el vértice buscado
+        }
+
+        if (!aristaEncontrada) {
+            throw new GraphException("Arista " + etqX + " -> " + etqY + " no existe");
+        }
     }
 
-    @Override
-    public void removeEdge(T etqVerticeX, T etqVerticeY) throws GraphException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void setEdgeWeight(T etqVerticeX, T etqVerticeY, double peso) throws GraphException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
+    /**
+     * Calcula y devuelve el número total de aristas dirigidas en el grafo. Este
+     * método recorre todos los vértices del grafo y cuenta cada una de sus
+     * aristas salientes para obtener el total.
+     *
+     * @return Entero que representa el número total de aristas dirigidas en el
+     * grafo. Retorna 0 si el grafo está vacío o no contiene aristas.
+     *
+     */
     @Override
     public int getNumberEdges() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        int totalAristas = 0;
+        // Recorre todos los vértices y cuenta sus aristas salientes
+        for (ListVertex<T> vertice : vertices) {
+            Iterator<ListVertex<T>> iterVecinos = vertice.getNeighborIterator();
+            while (iterVecinos.hasNext()) {
+                iterVecinos.next();
+                totalAristas++;
+            }
+        }
+        return totalAristas;
     }
+
+
 }

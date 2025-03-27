@@ -1,8 +1,11 @@
 package implementaciones;
 
 import excepciones.GraphException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 /**
@@ -21,7 +24,7 @@ public class ListVertex<T> extends Vertex<T> {
      *
      * @param <T> Tipo de la etiqueta de un vertice destino de este arista
      */
-    protected class Edge<T> {
+    public static class Edge<T> {
 
         private final ListVertex<T> verticeDest;
         private double peso;
@@ -33,7 +36,7 @@ public class ListVertex<T> extends Vertex<T> {
          * @param verticeDest Vertice destino
          * @param peso Peso de la arista
          */
-        protected Edge(ListVertex verticeDest, double peso) {
+        public Edge(ListVertex verticeDest, double peso) {
             this.verticeDest = verticeDest;
             this.peso = peso;
         }
@@ -44,7 +47,7 @@ public class ListVertex<T> extends Vertex<T> {
          *
          * @return El vertice destino de esta arista
          */
-        protected ListVertex getVerticeDest() {
+        public ListVertex getVerticeDest() {
             return verticeDest;
         }
 
@@ -53,7 +56,7 @@ public class ListVertex<T> extends Vertex<T> {
          *
          * @param peso Peso de la arista
          */
-        protected void setPeso(double peso) {
+        public void setPeso(double peso) {
             this.peso = peso;
         }
 
@@ -62,7 +65,7 @@ public class ListVertex<T> extends Vertex<T> {
          *
          * @return El peso de esta arista
          */
-        protected double getPeso() {
+        public double getPeso() {
             return peso;
         }
     }
@@ -71,13 +74,13 @@ public class ListVertex<T> extends Vertex<T> {
      * Esta clase anidada implementa un iterador a los vertices destino de las
      * aristas salientes de este vertice
      */
-    private class NeighborIterator implements
-            Iterator<ListVertex<T>> {
+    private class NeighborIterator implements Iterator<ListVertex<T>> {
 
-        private final Iterator<Edge<T>> iteradorAristas;
+        private final ListIterator<Edge<T>> iteradorAristas;
+        private Edge<T> lastReturned = null;
 
         private NeighborIterator() {
-            iteradorAristas = aristas.listIterator(0);
+            iteradorAristas = aristas.listIterator(); // Usar ListIterator
         }
 
         @Override
@@ -87,21 +90,17 @@ public class ListVertex<T> extends Vertex<T> {
 
         @Override
         public ListVertex<T> next() {
-            ListVertex<T> vecinoSiguiente = null;
-            if (iteradorAristas.hasNext()) {
-                Edge<T> aristaVecinoSiguiente
-                        = iteradorAristas.next();
-                vecinoSiguiente
-                        = aristaVecinoSiguiente.getVerticeDest();
-            } else {
-                throw new NoSuchElementException();
-            }
-            return vecinoSiguiente;
+            lastReturned = iteradorAristas.next();
+            return lastReturned.getVerticeDest();
         }
 
         @Override
         public void remove() {
-            throw new UnsupportedOperationException();
+            if (lastReturned == null) {
+                throw new IllegalStateException("Debe llamar a next() antes de remove()");
+            }
+            iteradorAristas.remove(); // Elimina la arista actual
+            lastReturned = null;
         }
     }
 
@@ -111,10 +110,11 @@ public class ListVertex<T> extends Vertex<T> {
      */
     private class WeightIterator implements Iterator<Double> {
 
-        private final Iterator<Edge<T>> iteradorAristas;
+        private final ListIterator<Edge<T>> iteradorAristas;
+        private Edge<T> lastReturned = null;
 
         private WeightIterator() {
-            iteradorAristas = aristas.listIterator(0);
+            iteradorAristas = aristas.listIterator(); // Usar ListIterator
         }
 
         @Override
@@ -124,20 +124,17 @@ public class ListVertex<T> extends Vertex<T> {
 
         @Override
         public Double next() {
-            Double pesoSiguiente = null;
-            if (iteradorAristas.hasNext()) {
-                Edge<T> aristaVecinoSiguiente
-                        = iteradorAristas.next();
-                pesoSiguiente = aristaVecinoSiguiente.getPeso();
-            } else {
-                throw new NoSuchElementException();
-            }
-            return pesoSiguiente;
+            lastReturned = iteradorAristas.next();
+            return lastReturned.getPeso();
         }
 
         @Override
         public void remove() {
-            throw new UnsupportedOperationException();
+            if (lastReturned == null) {
+                throw new IllegalStateException("Debe llamar a next() antes de remove()");
+            }
+            iteradorAristas.remove(); // Elimina la arista actual
+            lastReturned = null;
         }
     }
 
@@ -167,7 +164,7 @@ public class ListVertex<T> extends Vertex<T> {
         if (hasEdge(verticeDest)) {
             throw new GraphException("Ya hay una arista entre el vertice origen y el vertice destino 00");
         }
-aristas.add(new Edge(verticeDest, peso));
+        aristas.add(new Edge(verticeDest, peso));
     }
 
     /**
@@ -193,8 +190,8 @@ aristas.add(new Edge(verticeDest, peso));
         if (!hasEdge(verticeDest)) {
             throw new GraphException("No hay una arista entre el vertice origen y el vertice destino");
         }
-        
-for (int i = 0; i < aristas.size(); i++) {
+
+        for (int i = 0; i < aristas.size(); i++) {
             if (verticeDest.equals(aristas.get(i).verticeDest)) {
                 aristas.remove(i);
             }
@@ -224,7 +221,7 @@ for (int i = 0; i < aristas.size(); i++) {
      * @return La arista ntre este vertice y un vertice dado si existe, null en
      * caso contrario
      */
-    public Edge<T> getEdge(ListVertex<T> verticeDest) {
+    public  Edge<T> getEdge(ListVertex<T> verticeDest) {
         Edge<T> arista;
         for (int i = 0; i < aristas.size(); i++) {
             arista = aristas.get(i);
@@ -289,4 +286,5 @@ for (int i = 0; i < aristas.size(); i++) {
         }
         return null;
     }
+
 }
