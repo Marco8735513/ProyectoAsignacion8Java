@@ -8,6 +8,7 @@
     <modules>
         <module>grafosComun</module>
         <module>grafosMatriz</module>
+        <module>grafosLista</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
